@@ -1,9 +1,16 @@
-from django.shortcuts import render
-import post.services
+from django.http import JsonResponse
+from .serializers import RubricSerializer, PostSerializer
+import post.services as services
+
+def api_rubric(requests):
+    if requests.method == "GET":
+        rubric = services.get_rubric()
+        serializer = RubricSerializer(rubric, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 
-def post_list(request):
-    context = post.services.get_post_list()
-    return render(request, 'post/post_list.html', context)
-
-def post_rubric(request):pass
+def api_post(requests):
+    if requests.method == "GET":
+        post = services.get_post()
+        serializer = PostSerializer(post, many=True)
+        return JsonResponse(serializer.data, safe=False)

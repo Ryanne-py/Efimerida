@@ -52,3 +52,4 @@ class Rubric(models.Model):
         verbose_name_plural = "Rubrics"
         verbose_name = "Rubric"
         ordering = ['rubric_name']
+
