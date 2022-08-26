@@ -6,6 +6,7 @@ from django.utils import timezone
 
 
 class Post(models.Model):
+    """A blog post."""
     post_title = models.CharField(
         max_length=100,
         validators=[validators.MinLengthValidator(2)],
@@ -23,13 +24,17 @@ class Post(models.Model):
         default=timezone.now
         )
     post_edit_date = models.DateTimeField(
-        blank=True, null=True
+        blank=True, null=True,
+        default=timezone.now
         )
     post_rubric = models.ForeignKey(
         'Rubric', null=True,
         on_delete=models.PROTECT,
         verbose_name='Rubric'
         )
+    post_views = models.IntegerField(default=0)
+    post_likes = models.IntegerField(default=0)
+    post_tags = models.ManyToManyField('Tag')
 
     def __str__(self):
         return self.post_title
@@ -41,6 +46,7 @@ class Post(models.Model):
 
 
 class Rubric(models.Model):
+    """Rubric for the post."""
     rubric_name = models.CharField(
         max_length=25,
         db_index=True
@@ -54,3 +60,34 @@ class Rubric(models.Model):
         verbose_name = "Rubric"
         ordering = ['rubric_name']
 
+
+class Tag(models.Model):
+    """Tag for the post."""
+    tag_name = models.CharField(max_length=25)
+
+    def __str__(self):
+        return self.tag_name
+
+    class Meta:
+        verbose_name_plural = "Tags"
+        verbose_name = "Tag"
+        ordering = ['tag_name']
+
+
+class Comment(models.Model):
+    """Comments for the post."""
+    comment_taxt = models.TextField(
+        validators=[validators.MaxLengthValidator(1000)],
+        error_messages={'max_length': "The comment cannot be longer than 1000 characters"}
+    )
+    comment_author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+        )
+    comment_post = models.ForeignKey(
+        'Post',
+        on_delete=models.CASCADE
+    )
+    comment_created_date = models.DateTimeField(
+        default=timezone.now
+    )
