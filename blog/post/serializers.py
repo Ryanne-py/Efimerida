@@ -13,7 +13,7 @@ class PostSerializer(serializers.ModelSerializer):
 class PostEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'post_title', 'post_text', 'post_rubric', 'post_tags']
+        fields = ['id', 'post_title', 'post_text', 'post_rubric', 'post_tags', 'post_author', 'post_created_date', 'post_edit_date', 'post_likes', 'post_views']
         read_only_fields = ['id', 'post_author', 'post_created_date', 'post_edit_date', 'post_likes', 'post_views']
 
 
