@@ -8,6 +8,11 @@ def get_post() -> dict:
     return posts
 
 
+def update_post_edit_date(serializer):
+    serializer.instance.post_edit_date = timezone.now()
+    serializer.save()
+
+
 def get_rubric() -> dict:
     rubrics = Rubric.objects.all()
     return rubrics
