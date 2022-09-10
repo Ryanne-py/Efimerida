@@ -1,4 +1,4 @@
-.idea
+.idea/
 \env
 blog/post/__pycache__/
-blog/config/__pycache__/
+.blog/config/__pycache__/
