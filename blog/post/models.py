@@ -12,6 +12,11 @@ class Post(models.Model):
         validators=[validators.MinLengthValidator(2)],
         error_messages={'min_length': 'Post title must be longer than two characters'}
         )
+    post_image = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to='post_image/',
+        )
     post_author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
@@ -76,7 +81,7 @@ class Tag(models.Model):
 
 class Comment(models.Model):
     """Comments for the post."""
-    comment_taxt = models.TextField(
+    comment_text = models.TextField(
         validators=[validators.MaxLengthValidator(1000)],
         error_messages={'max_length': "The comment cannot be longer than 1000 characters"}
     )
@@ -91,3 +96,11 @@ class Comment(models.Model):
     comment_created_date = models.DateTimeField(
         default=timezone.now
     )
+
+    def __str__(self):
+        return f'Comment in the post {self.comment_post.post_title}'
+
+    class Meta:
+        verbose_name_plural = "Comments"
+        verbose_name = "Comment"
+        ordering = ['-comment_created_date']
