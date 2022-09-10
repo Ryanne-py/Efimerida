@@ -1,10 +1,11 @@
-asgiref             3.5.2
-Django              4.0.6
-django-cors-headers 3.13.0
-djangorestframework 3.13.1
-pip                 21.3.1
-pytz                2022.2.1
-setuptools          60.2.0
-sqlparse            0.4.2
-tzdata              2022.1
-wheel               0.37.1
+asgiref
+Django
+django-cors-headers
+djangorestframework
+pip
+pytz
+setuptools
+sqlparse
+tzdata
+wheel
+Pillow
