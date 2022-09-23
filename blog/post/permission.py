@@ -6,4 +6,8 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        return obj.owner == request.user
+        if str(view) == 'CommentDetailView':
+            return obj.comment_author == request.user
+
+        if str(view) == 'PostDetailView':
+            return obj.post_author == request.user
