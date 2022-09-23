@@ -1,30 +1,40 @@
 from rest_framework import serializers
-from .models import Rubric, Post, Comment, Tag
+from .models import Rubric, Post, Comment, Tag, CustomUser
 
 
-class PostSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Post
-        fields = ('id', 'post_title', 'post_text', 'post_rubric', 'post_tags', 'post_author', 'post_created_date', 'post_edit_date', 'post_likes', 'post_views', 'post_image')
-        read_only_fields = ('id', 'post_created_date', 'post_edit_date', 'post_likes', 'post_views')
+        model = CustomUser
+        fields = ('id', 'username', 'email')
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    comment_author = CustomUserSerializer()
 
     class Meta:
         model = Comment
-        fields = ('id', 'comment_created_date', 'comment_post', 'comment_author', 'comment_text')
-        read_only_fields = ('comment_created_date', )
+        fields = '__all__'
+        read_only_fields = ('comment_created_date', 'comment_author')
 
 
 class RubricSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rubric
-        fields = ('id', 'rubric_name')
+        fields = '__all__'
 
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('id', 'tag_name')
+        fields = '__all__'
+
+
+class PostSerializer(serializers.ModelSerializer):
+    post_rubric = RubricSerializer()
+    post_author = CustomUserSerializer()
+
+    class Meta:
+        model = Post
+        fields = '__all__'
+        read_only_fields = ('id', 'post_created_date', 'post_edit_date', 'post_likes', 'post_views', 'post_author')
