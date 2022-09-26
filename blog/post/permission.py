@@ -11,3 +11,6 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
         if str(view) == 'PostDetailView':
             return obj.post_author == request.user
+
+        if str(view) == 'UserDetailView':
+            return obj == request.user

@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from django.utils import timezone
 from rest_framework.exceptions import ParseError
-from .models import Post, Rubric, Comment
+from .models import Post, Rubric, Comment, CustomUser
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework.parsers import JSONParser
 from rest_framework.authtoken.models import Token
@@ -91,3 +91,8 @@ def get_comment_on_post(generic, request, *args, **kwargs):
 
     serializer = generic.get_serializer(queryset, many=True)
     return serializer.data
+
+
+def get_user_list():
+    users = CustomUser.objects.all()
+    return users

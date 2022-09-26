@@ -1,5 +1,5 @@
 from .models import CustomUser
-from .serializers import RubricSerializer, PostSerializer, CommentSerializer
+from .serializers import RubricSerializer, PostSerializer, CommentSerializer, CustomUserSerializer
 import post.services as services
 from rest_framework import generics, permissions, viewsets
 from rest_framework.response import Response
@@ -22,6 +22,24 @@ def authentication(request):
     if request.method == 'POST':
         token = services.authentication(request)
         return token
+
+
+class UserList(generics.ListAPIView):
+    queryset = services.get_user_list()
+    serializer_class = CustomUserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def __str__(self):
+        return 'UserListView'
+
+
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = services.get_user_list()
+    serializer_class = CustomUserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def __str__(self):
+        return 'UserDetailView'
 
 
 class PostList(generics.ListCreateAPIView):

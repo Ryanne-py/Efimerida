@@ -6,6 +6,9 @@ urlpatterns = [
     path('registration/', views.registration),
     path('authentication/', views.authentication),
 
+    path('user_list/', views.UserList.as_view()),
+    path('user_detail/<int:pk>/', views.UserDetail.as_view()),
+
     path('rubric_list/', views.RubricList.as_view()),
     path('rubric_detail/<int:pk>/', views.RubricDetail.as_view()),
 
