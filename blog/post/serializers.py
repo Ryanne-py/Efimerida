@@ -7,6 +7,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('id', 'username', 'email')
+        read_only_fields = ('id', 'email')
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -15,19 +16,21 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
-        read_only_fields = ('comment_created_date', 'comment_author')
+        read_only_fields = ('id', 'comment_created_date', 'comment_author')
 
 
 class RubricSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rubric
         fields = '__all__'
+        read_only_fields = ('id',)
 
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = '__all__'
+        read_only_fields = ('id',)
 
 
 class PostSerializer(serializers.ModelSerializer):
