@@ -42,22 +42,29 @@ def get_comment_list():
 def registration(request):
     try:
         data = JSONParser().parse(request)
-        user = CustomUser.objects.create(
+        user = CustomUser.objects.create_user(
             username=data['username'],
             email=data['email'],
             password=data['password'])
         user.save()
         token = Token.objects.create(user=user)
-        return JsonResponse({'token': str(token)}, status=201)
-    except IntegrityError:
-        return JsonResponse(
-            {'error': 'username taken. choose another username'}, status=400)
+        return JsonResponse({'token': str(token), 'detail': 'Registration completed successfully'}, status=201)
+
+    except IntegrityError as i:
+        if i.args[0] == 'UNIQUE constraint failed: post_customuser.email':
+            return JsonResponse(
+                {'detail': 'A user with that email already exists.'}, status=400)
+        else:
+            return JsonResponse(
+                {'detail': 'A user with that username already exists.'}, status=400)
+
     except ParseError:
         return JsonResponse(
-            {'error': 'you need to send data for registration'}, status=400)
+            {'detail': 'you need to send data for registration'}, status=400)
+
     except KeyError:
         return JsonResponse(
-            {'error': 'you need to fill in all fields for registration (username, email, password'}, status=400)
+            {'detail': 'you need to fill in all fields for registration (username, email, password'}, status=400)
 
 
 def authentication(request):
@@ -66,7 +73,7 @@ def authentication(request):
                         password=data['password'])
     if user is None:
         return JsonResponse(
-            {'error': 'unable to login. check email and password'}, status=400)
+            {'detail': 'unable to login. check email and password'}, status=400)
     else:
         token = Token.objects.get_or_create(user=user)
         return JsonResponse({'token': str(token[0])}, status=201)
