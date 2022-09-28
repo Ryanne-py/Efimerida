@@ -1,20 +1,32 @@
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.core import validators
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from .managers import CustomUserManager
-from django.utils.translation import gettext_lazy as _
 
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(
-        _('email address'),
-        unique=True
-    )
 
+    username_validator = UnicodeUsernameValidator()
+    email = models.EmailField(
+        unique=True,
+        error_messages={
+            "unique": "A user with that email already exists.",
+        }
+    )
+    username = models.CharField(
+        max_length=150,
+        unique=True,
+        help_text="Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+        validators=[username_validator],
+        error_messages={
+            "unique": "A user with that username already exists.",
+        },
+    )
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
 
     objects = CustomUserManager()
 
@@ -56,12 +68,12 @@ class Post(models.Model):
         )
     post_rubric = models.ForeignKey(
         'Rubric', null=True,
-        on_delete=models.PROTECT,
-        verbose_name='Rubric'
+        on_delete=models.SET_NULL,
+        verbose_name='Rubric',
         )
     post_views = models.IntegerField(default=0)
     post_likes = models.IntegerField(default=0)
-    post_tags = models.ManyToManyField('Tag')
+    post_tags = models.ManyToManyField('Tag', null=True)
 
     def __str__(self):
         return self.post_title
