@@ -62,11 +62,11 @@ def registration(request):
 
 def authentication(request):
     data = JSONParser().parse(request)
-    user = authenticate(request, username=data['username'],
+    user = authenticate(request, email=data['email'],
                         password=data['password'])
     if user is None:
         return JsonResponse(
-            {'error': 'unable to login. check username and password'}, status=400)
+            {'error': 'unable to login. check email and password'}, status=400)
     else:
         token = Token.objects.get_or_create(user=user)
         return JsonResponse({'token': str(token[0])}, status=201)
