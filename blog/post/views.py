@@ -1,5 +1,5 @@
 from .models import CustomUser
-from .serializers import RubricSerializer, PostSerializer, CommentSerializer, CustomUserSerializer
+from .serializers import *
 import post.services as services
 from rest_framework import generics, permissions, viewsets
 from rest_framework.response import Response
@@ -44,12 +44,16 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class PostList(generics.ListCreateAPIView):
     queryset = services.get_post_list(serializer=False)
-    serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return PostCreateSerializer
+        else:
+            return PostSerializer
 
     def perform_create(self, serializer):
         serializer.save(post_author=self.request.user)
-        serializer.save()
 
     def __str__(self):
         return 'PostListView'
@@ -76,15 +80,19 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class CommentList(generics.ListCreateAPIView):
     queryset = services.get_comment_list()
-    serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return CommentCreateSerializer
+        else:
+            return CommentSerializer
 
     def list(self, request, *args, **kwargs):
         return Response(services.get_comment_on_post(self, request, *args, **kwargs))
 
     def perform_create(self, serializer):
         serializer.save(comment_author=self.request.user)
-        serializer.save()
 
     def __str__(self):
         return 'CommentListView'
