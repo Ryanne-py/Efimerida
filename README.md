@@ -1,5 +1,5 @@
 # Efimerida
-This site allows people to read or create posts.
+This RESTful API is for a site running blogging systems.
 # Description
 For posts there is a system of topics and tags, reactions (likes, comments) and the ability to subscribe to the author.
 # Start instructions
