@@ -1,14 +1,17 @@
-from django.contrib.auth.validators import UnicodeUsernameValidator
-from django.db import models
-from django.core import validators
 from django.conf import settings
-from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.core import validators
+from django.db import models
+from django.utils import timezone
 from .managers import CustomUserManager
 
 
 class CustomUser(AbstractUser):
-
+    """
+    Model for user profile in blog.
+    Username, email and password are required. Other fields are optional.
+    """
     username_validator = UnicodeUsernameValidator()
     email = models.EmailField(
         unique=True,
@@ -40,16 +43,15 @@ class CustomUser(AbstractUser):
 
 
 class Post(models.Model):
-    """A blog post."""
+    """
+    Models for post in blog.
+    Title, author, text and rubric  are required. Other fields are optional.
+    """
+
     post_title = models.CharField(
         max_length=100,
         validators=[validators.MinLengthValidator(2)],
         error_messages={'min_length': 'Post title must be longer than two characters'}
-        )
-    post_image = models.ImageField(
-        null=True,
-        blank=True,
-        upload_to='post_image/',
         )
     post_author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -71,9 +73,18 @@ class Post(models.Model):
         on_delete=models.SET_NULL,
         verbose_name='Rubric',
         )
+    post_image = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to='post_image/',
+        )
+    post_likes = models.ManyToManyField(
+        'CustomUser',
+        blank=True,
+        related_name='post_likes'
+    )
     post_views = models.IntegerField(default=0)
-    post_likes = models.IntegerField(default=0)
-    post_tags = models.ManyToManyField('Tag', null=True)
+    post_tags = models.ManyToManyField('Tag', blank=True)
 
     def __str__(self):
         return self.post_title
@@ -85,7 +96,11 @@ class Post(models.Model):
 
 
 class Rubric(models.Model):
-    """Rubric for the post."""
+
+    """
+    Model rubric for the post in blog.
+    """
+
     rubric_name = models.CharField(
         max_length=25,
         db_index=True
@@ -101,7 +116,9 @@ class Rubric(models.Model):
 
 
 class Tag(models.Model):
-    """Tag for the post."""
+    """
+    Model tag for the post in blog.
+    """
     tag_name = models.CharField(max_length=25)
 
     def __str__(self):
@@ -114,7 +131,9 @@ class Tag(models.Model):
 
 
 class Comment(models.Model):
-    """Comments for the post."""
+    """
+    Models comment for the post in blog.
+    """
     comment_text = models.TextField(
         validators=[validators.MaxLengthValidator(1000)],
         error_messages={'max_length': "The comment cannot be longer than 1000 characters"}
