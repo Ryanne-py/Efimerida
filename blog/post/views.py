@@ -1,49 +1,9 @@
-from .models import CustomUser
 from .serializers import *
 from post.services import *
 from rest_framework import generics, permissions, views
 from rest_framework.response import Response
-from django.db import IntegrityError
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from post.permission import IsOwnerOrReadOnly
-import post.generics as additional_generics
-
-
-@csrf_exempt
-def registration(request):
-    if request.method == 'POST':
-        token = UserServices.registration(request)
-        return token
-
-
-@csrf_exempt
-def authentication(request):
-    if request.method == 'POST':
-        token = UserServices.authentication(request)
-        return token
-
-
-class UserList(generics.ListAPIView):
-    serializer_class = CustomUserSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def get_queryset(self):
-        return UserServices.get_user_list()
-
-    def __str__(self):
-        return 'UserListView'
-
-
-class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = CustomUserSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-
-    def get_queryset(self):
-        return UserServices.get_user_list()
-
-    def __str__(self):
-        return 'UserDetailView'
+from .generics import PostListWithFilterAPIView
+from .permission import IsOwnerOrReadOnly
 
 
 class PostList(generics.ListCreateAPIView):
@@ -86,7 +46,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         return 'PostDetailView'
 
 
-class PostListByFilter(additional_generics.PostListWithFilterAPIView):
+class PostListByFilter(PostListWithFilterAPIView):
     serializer_class = PostSerializer
     permission_classes = [permissions.AllowAny]
 

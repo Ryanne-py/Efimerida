@@ -1,17 +1,10 @@
 from rest_framework import serializers
-from .models import Rubric, Post, Comment, Tag, CustomUser
-
-
-class CustomUserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = CustomUser
-        fields = ('id', 'username', 'email')
-        read_only_fields = ('id', 'email')
+from .models import Rubric, Post, Comment, Tag
+import user.serializers as user
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    comment_author = CustomUserSerializer()
+    comment_author = user.CustomUserSerializer()
 
     class Meta:
         model = Comment
@@ -43,7 +36,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     post_rubric = RubricSerializer()
-    post_author = CustomUserSerializer()
+    post_author = user.CustomUserSerializer()
 
     class Meta:
         model = Post

@@ -1,10 +1,8 @@
-from rest_framework import mixins, views, status
+from rest_framework import mixins, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from post.services import *
-from post.dataclasses import Filters
-from post.serializers import PostSerializer
-from post.services import *
+from .services import PostRecommendationServices,  PostSerializer
+from .dataclasses import Filters
 
 
 class PostListWithFilterAPIView(mixins.CreateModelMixin,
