@@ -3,13 +3,15 @@ from rest_framework import generics, permissions
 from .permission import IsOwnerOrReadOnly
 from .serializers import CustomUserSerializer
 from .services import UserServices
-
+from django.http import JsonResponse
 
 @csrf_exempt
 def registration(request):
     if request.method == 'POST':
         token = UserServices.registration(request)
         return token
+    else:
+        return JsonResponse({'Error': f'Method {request.method} not allowed'}, status=400)
 
 
 @csrf_exempt
@@ -17,6 +19,8 @@ def authentication(request):
     if request.method == 'POST':
         token = UserServices.authentication(request)
         return token
+    else:
+        return JsonResponse({'Error': f'Method {request.method} not allowed'}, status=400)
 
 
 class UserList(generics.ListAPIView):
